@@ -1,0 +1,15 @@
+model_for_image:
+  name: "nateraw/vit-base-beans"
+  embedding_size: 768
+  label: "image"
+
+model_for_text:
+  name: "ViT-B/32"
+  embedding_size: 512
+  label: "text"
+
+vdb:
+  collection_name: "T-Shirt_shop"
+
+max_text_length: 100
+#"clip"
