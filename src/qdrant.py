@@ -14,18 +14,7 @@ qdrant_client = QdrantClient(
 )
 
 
-def create_collection(collection_name: str, vector_size: int):
-    qdrant_client.recreate_collection(
-        collection_name=collection_name,
-        vectors_config=models.VectorParams(
-            size=vector_size,  # Vector size is defined by used model
-            distance=models.Distance.DOT
-        ),
-    )
-    print("Create_collection")
-
-
-def create_double_embedding_collection(collection_name: str, img_vectors_config: dict, text_vectors_config: dict):
+def create_double_embedding_collection(collection_name: str, img_vectors_config: dict, text_vectors_config: dict) -> None:
     qdrant_client.recreate_collection(
         collection_name=collection_name,
         vectors_config={
@@ -38,9 +27,8 @@ def create_double_embedding_collection(collection_name: str, img_vectors_config:
     print("Create_collection")
 
 
-def add_embedding_to_double_collection(vectors_image, vectors_text, paths: list, collection_name: str,
-                                       img_vectors_config: dict, text_vectors_config: dict):
-
+def add_embedding_to_double_collection(vectors_image: Tensor, vectors_text: list, paths: list, collection_name: str,
+                                       img_vectors_config: dict, text_vectors_config: dict) -> None:
     qdrant_client.upload_points(
         collection_name=collection_name,
         points=[
@@ -54,22 +42,9 @@ def add_embedding_to_double_collection(vectors_image, vectors_text, paths: list,
     )
 
 
-def add_embedding_do_collection(vectors, paths: list, collection_name: str):
-    qdrant_client.upload_points(
-        collection_name=collection_name,
-        points=[
-            models.PointStruct(
-                id=idx, vector=vec.tolist(), payload={"metadata": path}
-            )
-            for idx, (vec, path) in enumerate(zip(vectors, paths))
-        ],
-    )
-
-
-def query_collection(query: Tensor, collection_name: str, data_type: str, result_num: int):
+def query_collection(query: Tensor, collection_name: str, data_type: str, result_num: int) -> list:
     result = qdrant_client.search(
         collection_name=collection_name,
-        # search_params=models.SearchParams(hnsw_ef=128, exact=False),
         query_vector=(data_type, query[0].tolist()),
         limit=result_num,
     )
