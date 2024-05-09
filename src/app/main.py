@@ -1,5 +1,4 @@
 from PIL import Image
-from fashion_clip.fashion_clip import FashionCLIP
 from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from io import BytesIO
@@ -10,7 +9,28 @@ from src.image_processor import ImageProcessing, ClipProcessing
 from src.qdrant import query_collection
 from src.utils import put_images_to_zip, check_is_type_available
 
-app = FastAPI()
+description = """ ClothesShop helps you find T-shirt which you are looking for. 
+              You can use search by image or search by text.
+              If you want to use endpoint click its name and then the button \"Try it out\""""
+
+tags_metadata = [
+    {
+        "name": "image",
+        "description": "Chose image of T-shirt which you are looking for. Make sure that the image is in jpg or jpeg format.\
+                       If you want more than one suggestion, use the /zip endpoint",
+    },
+    {
+        "name": "text",
+        "description": "Describe T-shirt which you are looking for.\
+                       If you want more than one suggestion, use the /zip endpoint",
+    },
+]
+app = FastAPI(
+    title="ClothesShop",
+    description=description,
+    openapi_tags=tags_metadata,
+    )
+
 model_for_image = ImageProcessing(configuration.model_for_image_name)
 model_for_text = ClipProcessing(configuration.model_for_text_name)
 
